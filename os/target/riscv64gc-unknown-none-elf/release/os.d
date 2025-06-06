@@ -1,0 +1,1 @@
+/home/xhsystem/Rust/rCore/os/target/riscv64gc-unknown-none-elf/release/os: /home/xhsystem/Rust/rCore/os/src/console.rs /home/xhsystem/Rust/rCore/os/src/entry.asm /home/xhsystem/Rust/rCore/os/src/lang_items.rs /home/xhsystem/Rust/rCore/os/src/logging.rs /home/xhsystem/Rust/rCore/os/src/main.rs /home/xhsystem/Rust/rCore/os/src/sbi.rs /home/xhsystem/Rust/rCore/os/src/uart.rs
