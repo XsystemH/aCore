@@ -22,10 +22,13 @@ mod lang_items;
 mod logging;
 mod sbi;
 mod uart;
-mod batch;
 mod sync;
 mod trap;
 mod syscall;
+mod loader;
+mod config;
+mod task;
+mod timer;
 
 global_asm!(include_str!("entry.asm"));
 global_asm!(include_str!("link_app.S"));
@@ -54,6 +57,9 @@ unsafe fn rust_boot() {
     // 设置 PMP 允许全物理访问
     pmpaddr0::write(0x3fffffffffffffusize);
     pmpcfg0::write(0xf);
+
+    // init timer in M mode
+    timer::init_timer();
 
     // 全委托给 S-mode
     mideleg::set_stimer();
@@ -110,6 +116,14 @@ pub fn rust_main() -> ! {
     // CI autotest success: sbi::shutdown(false)
     // CI autotest failed : sbi::shutdown(true)
     trap::init();
-    batch::init();
-    batch::run_next_app();
+    // batch::init();
+    loader::load_apps();
+    println!("[kernel] Apps Loaded");
+    trap::enable_timer_interrupt();
+    println!("[kernel] Timer Interrupt Enabled");
+    timer::set_next_trigger();
+    println!("[Kernel] Set first time interrupt");
+    // batch::run_next_app();
+    task::run_first_task();
+    panic!("Unreachable in rust_main!");
 }

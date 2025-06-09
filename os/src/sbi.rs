@@ -3,7 +3,6 @@
 pub const TEST_DEVICE_ADDR: usize = 0x100000;
 
 pub fn console_putchar(c: usize) {
-    #[allow(deprecated)]
     crate::uart::putchar(c);
 }
 
