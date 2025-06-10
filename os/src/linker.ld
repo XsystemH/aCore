@@ -31,6 +31,7 @@ SECTIONS
 
     . = ALIGN(4K);
     edata = .;
+    sbss_stack = .;
     .bss : {
         *(.bss.stack)
         sbss = .;

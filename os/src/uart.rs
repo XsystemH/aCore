@@ -6,9 +6,12 @@ const UART_BASE: usize = 0x1000_0000;
 // 寄存器偏移量
 const RBR: usize = 0; // 接收缓冲寄存器 (读)
 const THR: usize = 0; // 发送保持寄存器 (写)
+const DLL: usize = 0;  // 除数锁存器 (低)
+const DLM: usize = 1;  // 除数锁存器 (高)
 const IER: usize = 1; // 中断使能寄存器
 const FCR: usize = 2; // FIFO 控制寄存器
 const LCR: usize = 3; // 线路控制寄存器
+const MCR: usize = 4;  // Modem 控制寄存器
 const LSR: usize = 5; // 线路状态寄存器
 
 // LSR 状态位
@@ -25,9 +28,9 @@ pub fn init() {
 
         // 设置波特率为 38400
         // 38400 = 115200 / 3
-        // 除数 = 16000000 / (16 * 38400) = 26
-        write_volatile((UART_BASE + 0) as *mut u8, 26 as u8); // 低8位
-        write_volatile((UART_BASE + 1) as *mut u8, 0x00);     // 高8位
+        // 除数 = 22729000 / (16 * 38400) = 26
+        write_volatile((UART_BASE + DLL) as *mut u8, 0x25); // 低8位
+        write_volatile((UART_BASE + DLM) as *mut u8, 0x00); // 高8位
 
         // 8位数据位，1位停止位，无奇偶校验
         write_volatile((UART_BASE + LCR) as *mut u8, 0x03);
@@ -36,7 +39,7 @@ pub fn init() {
         write_volatile((UART_BASE + FCR) as *mut u8, 0xC7);
 
         // 启用接收数据可用中断
-        write_volatile((UART_BASE + IER) as *mut u8, 0x01);
+        write_volatile((UART_BASE + MCR) as *mut u8, 0x03);
     }
 }
 

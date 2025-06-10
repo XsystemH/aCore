@@ -101,9 +101,13 @@ impl TaskManager {
     fn find_next_task(&self) -> Option<usize> {
         let inner = self.inner.exclusive_access();
         let current = inner.current_task;
-        (current + 1..current + self.num_app + 1)
-            .map(|id| id % self.num_app)
-            .find(|id| inner.tasks[*id].task_status == TaskStatus::Ready)
+        for i in 1..=self.num_app {
+            let id = (current + i) % self.num_app;
+            if inner.tasks[id].task_status == TaskStatus::Ready {
+                return Some(id);
+            }
+        }
+        None
     }
 
     /// Switch current `Running` task to the task we have found,
