@@ -4,7 +4,7 @@ use super::{FrameTracker, frame_alloc};
 use super::{PTEFlags, PageTable, PageTableEntry};
 use super::{PhysAddr, PhysPageNum, VirtAddr, VirtPageNum};
 use super::{StepByOne, VPNRange};
-use crate::config::{MEMORY_END, MMIO, PAGE_SIZE, TRAMPOLINE, TRAP_CONTEXT, USER_STACK_SIZE};
+use crate::config::{MEMORY_END, MMIO, PAGE_SIZE, TRAMPOLINE, TRAP_CONTEXT, USER_STACK_SIZE, UART_BASE, UART_SIZE};
 use crate::sync::UPSafeCell;
 use alloc::collections::BTreeMap;
 use alloc::sync::Arc;
@@ -79,8 +79,7 @@ impl MemorySet {
     /// Without kernel stacks.
     pub fn new_kernel() -> Self {
         let mut memory_set = Self::new_bare();
-        // map trampoline
-        memory_set.map_trampoline();
+
         // map kernel sections
         println!(".text [{:#x}, {:#x})", stext as usize, etext as usize);
         println!(".rodata [{:#x}, {:#x})", srodata as usize, erodata as usize);
@@ -140,17 +139,18 @@ impl MemorySet {
             None,
         );
         println!("mapping memory-mapped registers");
-        for pair in MMIO {
-            memory_set.push(
-                MapArea::new(
-                    (*pair).0.into(),
-                    ((*pair).0 + (*pair).1).into(),
-                    MapType::Identical,
-                    MapPermission::R | MapPermission::W,
-                ),
-                None,
-            );
-        }
+        memory_set.push(
+            MapArea::new(
+                UART_BASE.into(),
+                (UART_BASE + UART_SIZE).into(),
+                MapType::Identical,
+                MapPermission::R | MapPermission::W
+            ), None
+        );
+
+        // map trampoline
+        memory_set.map_trampoline();
+
         memory_set
     }
     /// Include sections in elf and trampoline and TrapContext and user stack,
@@ -383,6 +383,7 @@ bitflags! {
 
 #[allow(unused)]
 pub fn remap_test() {
+    println!("remap_test start!");
     let mut kernel_space = KERNEL_SPACE.exclusive_access();
     let mid_text: VirtAddr = ((stext as usize + etext as usize) / 2).into();
     let mid_rodata: VirtAddr = ((srodata as usize + erodata as usize) / 2).into();

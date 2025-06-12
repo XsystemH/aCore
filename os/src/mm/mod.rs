@@ -25,6 +25,9 @@ pub use page_table::{PageTableEntry, translated_byte_buffer};
 /// initiate heap allocator, frame allocator and kernel space
 pub fn init() {
     heap_allocator::init_heap();
+    println!("[Kernel] Heap allocator initialized");
     frame_allocator::init_frame_allocator();
+    println!("[Kernel] Frame allocator initialized");
     KERNEL_SPACE.exclusive_access().activate();
+    println!("[Kernel] Kernel space activated");
 }

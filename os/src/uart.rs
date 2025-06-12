@@ -1,7 +1,7 @@
 use core::ptr::{read_volatile, write_volatile};
 
 // UART 寄存器的内存映射地址（在 QEMU virt 平台上）
-const UART_BASE: usize = 0x1000_0000;
+use crate::config::UART_BASE;
 
 // 寄存器偏移量
 const RBR: usize = 0; // 接收缓冲寄存器 (读)

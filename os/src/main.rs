@@ -49,10 +49,14 @@ global_asm!(include_str!("link_app.S"));
 /// clear BSS segment
 pub fn clear_bss() {
     unsafe extern "C" {
-        safe fn sbss();
-        safe fn ebss();
+        fn sbss();
+        fn ebss();
     }
-    (sbss as usize..ebss as usize).for_each(|a| unsafe { (a as *mut u8).write_volatile(0) });
+    println!("[kernel] Clearing BSS segment from {:x} to {:x}", sbss as usize, ebss as usize);
+    (sbss as usize..ebss as usize).for_each(|a| unsafe {
+        (a as *mut u8).write_volatile(0)
+    });
+    println!("[kernel] BSS segment cleared");
 }
 
 // from M mode to S mode
