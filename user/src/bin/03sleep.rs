@@ -12,7 +12,6 @@ fn main() -> i32 {
     println!("Current time: {}", current_timer as u64);
     let wait_for = current_timer + 3000;
     while get_time() < wait_for {
-        println!("Waiting");
         yield_();
     }
     println!("What the fuck?");
