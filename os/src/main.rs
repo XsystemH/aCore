@@ -66,6 +66,8 @@ unsafe fn rust_boot() {
 
     // 设置 mstatus 寄存器及 mepc 寄存器
     mstatus::set_mpp(mstatus::MPP::Supervisor);
+
+    // mepc 寄存器设置为 rust_main 的入口地址
     mepc::write(rust_main as usize);
 
     // 暂时禁用页表
@@ -83,6 +85,7 @@ unsafe fn rust_boot() {
     mideleg::set_sext();
     mideleg::set_ssoft();
 
+    // 全委托给 S-mode
     asm!(
     "csrw mideleg, {mideleg}",
     "csrw medeleg, {medeleg}",
@@ -103,7 +106,7 @@ pub fn rust_main() -> ! {
     println!("[kernel] Hello, world!");
     mm::init();
     println!("[Kernel] Memory management initialized");
-    mm::remap_test();
+    // mm::remap_test();
     trap::init();
     // loader::load_apps();
     println!("[kernel] Apps Loaded");

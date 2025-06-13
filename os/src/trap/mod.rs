@@ -27,12 +27,13 @@ global_asm!(include_str!("trap.S"));
 
 /// initialize CSR `stvec` as the entry of `__alltraps`
 pub fn init() {
-    unsafe extern "C" {
-        safe fn __alltraps();
-    }
-    unsafe {
-        stvec::write(__alltraps as usize, TrapMode::Direct);
-    }
+    // unsafe extern "C" {
+    //     safe fn __alltraps();
+    // }
+    // unsafe {
+    //     stvec::write(__alltraps as usize, TrapMode::Direct);
+    // }
+    set_kernel_trap_entry();
 }
 
 fn set_kernel_trap_entry() {
@@ -69,7 +70,10 @@ pub fn trap_handler() -> ! {
             cx.sepc += 4;
             cx.x[10] = syscall(cx.x[17], [cx.x[10], cx.x[11], cx.x[12]]) as usize;
         }
-        Trap::Exception(Exception::StoreFault) | Trap::Exception(Exception::StorePageFault) => {
+        Trap::Exception(Exception::LoadFault) |
+        Trap::Exception(Exception::LoadPageFault) |
+        Trap::Exception(Exception::StoreFault) |
+        Trap::Exception(Exception::StorePageFault) => {
             println!("[kernel] PageFault in application, kernel killed it.");
             exit_current_and_run_next();
         }

@@ -4,7 +4,7 @@ use super::{FrameTracker, frame_alloc};
 use super::{PTEFlags, PageTable, PageTableEntry};
 use super::{PhysAddr, PhysPageNum, VirtAddr, VirtPageNum};
 use super::{StepByOne, VPNRange};
-use crate::config::{MEMORY_END, MMIO, PAGE_SIZE, TRAMPOLINE, TRAP_CONTEXT, USER_STACK_SIZE, UART_BASE, UART_SIZE};
+use crate::config::{MEMORY_END, MMIO, PAGE_SIZE, TRAMPOLINE, TRAP_CONTEXT, USER_STACK_SIZE, UART_BASE, UART_SIZE, CLINT_BASE, CLINT_SIZE};
 use crate::sync::UPSafeCell;
 use alloc::collections::BTreeMap;
 use alloc::sync::Arc;
@@ -145,7 +145,18 @@ impl MemorySet {
                 (UART_BASE + UART_SIZE).into(),
                 MapType::Identical,
                 MapPermission::R | MapPermission::W
-            ), None
+            ),
+            None,
+        );
+        println!("mapping CLINT");
+        memory_set.push(
+            MapArea::new(
+                CLINT_BASE.into(),
+                (CLINT_BASE + CLINT_SIZE).into(),
+                MapType::Identical,
+                MapPermission::R | MapPermission::W,
+            ),
+            None,
         );
 
         // map trampoline
@@ -383,7 +394,7 @@ bitflags! {
 
 #[allow(unused)]
 pub fn remap_test() {
-    println!("remap_test start!");
+    // println!("remap_test start!");
     let mut kernel_space = KERNEL_SPACE.exclusive_access();
     let mid_text: VirtAddr = ((stext as usize + etext as usize) / 2).into();
     let mid_rodata: VirtAddr = ((srodata as usize + erodata as usize) / 2).into();
@@ -409,5 +420,5 @@ pub fn remap_test() {
             .unwrap()
             .executable(),
     );
-    println!("remap_test passed!");
+    // println!("remap_test passed!");
 }

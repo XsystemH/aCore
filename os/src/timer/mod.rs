@@ -41,7 +41,7 @@ pub static mut TIMER_SCRATCH: [usize; 5] = [0; 5];
 
 #[unsafe(no_mangle)]
 pub unsafe fn init_timer() {
-    // set_timer(get_time() + SCHED_PERIOD);
+    set_timer(get_time() + SCHED_PERIOD);
 
     let mscratch_ptr = unsafe { core::ptr::addr_of!(TIMER_SCRATCH) as usize };
     mscratch::write(mscratch_ptr);

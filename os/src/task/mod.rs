@@ -146,6 +146,13 @@ impl TaskManager {
         let inner = self.inner.exclusive_access();
         inner.tasks[inner.current_task].get_trap_cx()
     }
+
+    /// Change the program break of the current 'Running' task.
+    pub fn change_program_break(&self, size: i32) -> Option<usize> {
+        let mut inner = self.inner.exclusive_access();
+        let cur = inner.current_task;
+        inner.tasks[cur].change_program_brk(size)
+    }
 }
 
 /// run first task
@@ -187,4 +194,8 @@ pub fn current_user_token() -> usize {
 
 pub fn current_trap_cx() -> &'static mut TrapContext {
     TASK_MANAGER.get_current_trap_cx()
+}
+
+pub fn change_program_break(size: i32) -> Option<usize> {
+    TASK_MANAGER.change_program_break(size)
 }
