@@ -1,5 +1,15 @@
+use super::read;
 use super::write;
 use core::fmt::{self, Write};
+
+const STDIN: usize = 0;
+
+pub fn getchar() -> u8 {
+    let mut buf = [0u8; 1];
+    // Read a single byte from stdin
+    let _ = read(STDIN, &mut buf);
+    buf[0]
+}
 
 struct Stdout;
 
