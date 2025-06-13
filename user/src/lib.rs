@@ -18,7 +18,7 @@ static HEAP_SPACE: [u8; USER_HEAP_SIZE] = [0; USER_HEAP_SIZE];
 static HEAP: LockedHeap = LockedHeap::empty();
 
 #[alloc_error_handler]
-fn alloc_error_handler(layout: core::alloc::Layout) -> ! {
+pub fn alloc_error_handler(layout: core::alloc::Layout) -> ! {
     panic!("Allocation error: {:?}", layout);
 }
 
