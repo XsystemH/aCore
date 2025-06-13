@@ -4,7 +4,7 @@ use super::{FrameTracker, frame_alloc};
 use super::{PTEFlags, PageTable, PageTableEntry};
 use super::{PhysAddr, PhysPageNum, VirtAddr, VirtPageNum};
 use super::{StepByOne, VPNRange};
-use crate::config::{MEMORY_END, MMIO, PAGE_SIZE, TRAMPOLINE, TRAP_CONTEXT, USER_STACK_SIZE, UART_BASE, UART_SIZE, CLINT_BASE, CLINT_SIZE};
+use crate::config::{MEMORY_END, MMIO, PAGE_SIZE, TRAMPOLINE, TRAP_CONTEXT, USER_STACK_SIZE, UART_BASE, UART_SIZE, CLINT_BASE, CLINT_SIZE, TEST_DEVICE_ADDR};
 use crate::sync::UPSafeCell;
 use alloc::collections::BTreeMap;
 use alloc::sync::Arc;
@@ -153,6 +153,16 @@ impl MemorySet {
             MapArea::new(
                 CLINT_BASE.into(),
                 (CLINT_BASE + CLINT_SIZE).into(),
+                MapType::Identical,
+                MapPermission::R | MapPermission::W,
+            ),
+            None,
+        );
+        println!("mapping Shutdown register");
+        memory_set.push(
+            MapArea::new(
+                TEST_DEVICE_ADDR.into(),
+                (TEST_DEVICE_ADDR + 4).into(),
                 MapType::Identical,
                 MapPermission::R | MapPermission::W,
             ),

@@ -1,6 +1,6 @@
 #![allow(unused)]
 
-pub const TEST_DEVICE_ADDR: usize = 0x100000;
+use crate::config::TEST_DEVICE_ADDR;
 
 pub fn console_putchar(c: usize) {
     crate::uart::putchar(c);

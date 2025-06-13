@@ -26,7 +26,7 @@ pub const CLINT_BASE:     usize = 0x2000000;
 pub const CLINT_SIZE: usize = 0x10000;  // 64KB
 pub const CLINT_MTIMECMP: usize = CLINT_BASE + 0x4000; // hart 0, if single core
 pub const CLINT_MTIME:    usize = CLINT_BASE + 0xBFF8;
-
+pub const TEST_DEVICE_ADDR: usize = 0x100000;
 pub const SCHED_PERIOD: usize = 1_000_000;
 pub const CLINT: usize = 0x2000000;
 pub const CPUS: usize = 4;
