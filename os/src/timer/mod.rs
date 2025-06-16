@@ -2,7 +2,7 @@ use core::arch::global_asm;
 use crate::config::{CLINT_MTIME, CLINT_MTIMECMP, CLOCK_FREQ, SCHED_PERIOD};
 use riscv::register::{mie, mscratch, mstatus, mtvec};
 
-const TICKS_PER_SEC: usize = 500; // interrupt frequency
+const TICKS_PER_SEC: usize = 50; // interrupt frequency
 const MSEC_PER_SEC: usize = 1000;
 const TIME_INTERVAL: usize = CLOCK_FREQ / TICKS_PER_SEC; // timer interval in seconds
 

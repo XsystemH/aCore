@@ -7,12 +7,13 @@ pub mod console;
 mod lang_items;
 mod syscall;
 
+use core::ptr::addr_of_mut;
 use buddy_system_allocator::LockedHeap;
 use syscall::*;
 
 const USER_HEAP_SIZE: usize = 16384; // 16 KiB
 
-static HEAP_SPACE: [u8; USER_HEAP_SIZE] = [0; USER_HEAP_SIZE];
+static mut HEAP_SPACE: [u8; USER_HEAP_SIZE] = [0; USER_HEAP_SIZE];
 
 #[global_allocator]
 static HEAP: LockedHeap = LockedHeap::empty();
@@ -27,7 +28,7 @@ pub fn alloc_error_handler(layout: core::alloc::Layout) -> ! {
 pub extern "C" fn _start() -> ! {
     unsafe {
         HEAP.lock()
-            .init(HEAP_SPACE.as_ptr() as usize, USER_HEAP_SIZE);
+            .init(addr_of_mut!(HEAP_SPACE) as usize, USER_HEAP_SIZE);
     }
     exit(main());
     panic!("unreachable after sys_exit!");

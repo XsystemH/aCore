@@ -108,11 +108,13 @@ pub fn rust_main() -> ! {
     println!("[Kernel] Memory management initialized");
     // mm::remap_test();
     trap::init();
-    // loader::load_apps();
-    println!("[kernel] Apps Loaded");
+    loader::list_apps();
+
+    task::add_initproc();
+    println!("[Kernel] Init process added");
     timer::set_next_trigger();
     println!("[Kernel] Set first time interrupt");
     // batch::run_next_app();
-    task::run_first_task();
+    task::run_tasks();
     panic!("Unreachable in rust_main!");
 }
