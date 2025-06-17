@@ -29,7 +29,6 @@ pub const CLINT_MTIME:    usize = CLINT_BASE + 0xBFF8;
 pub const TEST_DEVICE_ADDR: usize = 0x100000;
 pub const SCHED_PERIOD: usize = 1_000_000;
 pub const CLINT: usize = 0x2000000;
-pub const CPUS: usize = 4;
 
 pub use crate::board::{CLOCK_FREQ, MEMORY_END, MMIO};
 
